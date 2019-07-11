@@ -34,6 +34,7 @@ quitInit:
 /* Fill in the primes into memory 
    rbx contains curPrime
    rcx contains walker
+   rsi used to find the memory location
 */	
 calculate:
     lea primes(,1), %rsi
@@ -41,32 +42,52 @@ calculate:
     movb $0x00, (%rsi)   
     inc %rsi
     movb $0x00, (%rsi) /* 0 and 1 arent a prime */  
+    mov $0x01, %rbx /* curprime = 1 */
+whileCurPrime: /* While curprime < max */    
+    inc %rbx /* curprime ++ */
+    cmp $0x64, %rbx /* 0x64 ?= curprime  */
+    jge quitCalc /* curPrime >= 64 then quitCalc */
     
-    mov $0x64, %rbx
-    cmp $0x0, %rbx
-    jle quit
+    lea primes(,1), %rsi
+    add %rbx, %rsi  /* rsi = *primes + curPrime*/ 
+    
+    cmp $0x0, (%rsi)
+    je whileCurPrime /* if primes + walker == 0 continue */
+    mov %rbx, %rcx /* Walker = curPrime */
+    add %rcx, %rcx /* Walker += walker */
+    
+whileWalkerMax: 
+    cmp $0x64, %rcx /* Walker > Max ? */
+    jg whileCurPrime /* if yes, then go back to main loop */
+    
+    movb $0x0, (%rcx, %rsi)
+    add %rcx, %rcx /* walker += walker */
+    jmp whileWalkerMax
+     
+quitCalc:    
     ret
     
     /*
     WHILE curPrime < MAX
-    If Mem[walker] == 0 
+    If Mem[curPrime] == 0 
 	continue;
-       Walker = 2 * walker
+       Walker = 2 * curPrime
        WHILE walker < MAX
     	Mem[walker] = 0
     	Walker += curPrime
 */
 
+/*print all primes starting from 0 */
 printAllPrimes: 
-    mov $0x64, %rbx
+    xor %rbx, %rbx
 beginloop:    
-    cmp $0x0, %rbx
-    jle quit
+    cmp $0x64, %rbx
+    jg quit
     lea primes(,1), %rsi
     mov (%rsi,%rbx), %rax  
     call convertChar
     call print
-    dec %rbx
+    inc %rbx
     jmp beginloop
 quit: 
     ret
