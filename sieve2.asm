@@ -61,7 +61,7 @@ whileWalkerMax:
     jg whileCurPrime /* if yes, then go back to main loop */
     
     movb $0x0, (%rcx, %rsi)
-    add %rcx, %rcx /* walker += walker */
+    add %rbx, %rcx /* walker += curPrime */
     jmp whileWalkerMax
      
 quitCalc:    
