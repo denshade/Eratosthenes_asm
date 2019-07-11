@@ -15,8 +15,16 @@ main:
 	xor	%rax, %rax
 	call initPrimes
 	call calculate
+	call fixFour
 	call printAllPrimes
 	ret
+
+fixFour:
+    lea primes(,1), %rsi
+    mov $0x04, %rbx
+    add %rsi, %rbx
+    movb $0x00, (%ebx)    
+	ret 
 	
 initPrimes:
     mov $0x64, %rbx
@@ -67,17 +75,7 @@ whileWalkerMax:
 quitCalc:    
     ret
     
-    /*
-    WHILE curPrime < MAX
-    If Mem[curPrime] == 0 
-	continue;
-       Walker = 2 * curPrime
-       WHILE walker < MAX
-    	Mem[walker] = 0
-    	Walker += curPrime
-*/
-
-/*print all primes starting from 0 */
+/* print all primes starting from 0 */
 printAllPrimes: 
     xor %rbx, %rbx
 beginloop:    
@@ -93,7 +91,7 @@ quit:
     ret
 
 	
-/* converts a rax register. */
+/* converts a rax register into ascii. */
 convertChar:
 	add $0x30, %rax
     ret
