@@ -15,17 +15,10 @@ main:
 	xor	%rax, %rax
 	call initPrimes
 	call calculate
-	call fixFour
 	call printAllPrimes
 	ret
 
-fixFour:
-    lea primes(,1), %rsi
-    mov $0x04, %rbx
-    add %rsi, %rbx
-    movb $0x00, (%ebx)    
-	ret 
-	
+
 initPrimes:
     mov $0x64, %rbx
 beginInit:    
@@ -63,7 +56,8 @@ whileCurPrime: /* While curprime < max */
     je whileCurPrime /* if primes + walker == 0 continue */
     mov %rbx, %rcx /* Walker = curPrime */
     add %rcx, %rcx /* Walker += walker */
-    
+    lea primes(,1), %rsi
+
 whileWalkerMax: 
     cmp $0x64, %rcx /* Walker > Max ? */
     jg whileCurPrime /* if yes, then go back to main loop */
